@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --color-background: #09090b;
+  --color-surface: #18181b;
+  --color-surface-highlight: #27272a;
+  --color-primary: #ffffff;
+  --color-secondary: #a1a1aa;
+  --color-accent: #f59e0b;
+  --color-accent-dim: rgba(245, 158, 11, 0.1);
+  --color-alert: #ef4444;
+  --color-success: #10b981;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --background-image-gradient-subtle: linear-gradient(to bottom right, #18181b, #09090b);
+
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --shadow-inner-light: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: .5;
+    }
+  }
+}
+
+/* Custom Utilities that mimic the previous setup */
+@layer base {
+  body {
+    @apply bg-background text-primary font-sans antialiased overflow-x-hidden min-h-screen;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+}
+
+@layer components {
+  .card {
+    /* Use variables directly or utility classes. v4 supports specific border colors */
+    @apply bg-surface border border-primary/5 rounded-xl shadow-soft relative overflow-hidden;
+  }
+
+  .card-header {
+    @apply flex items-center justify-between p-6 border-b border-primary/5;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 font-medium text-sm;
+  }
+}
