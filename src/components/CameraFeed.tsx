@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import Webcam from 'react-webcam';
 import { Camera } from 'lucide-react';
-import type { DriverState } from '../hooks/useDriverAI';
+import { FaceMesh } from "@mediapipe/face_mesh";
+import type { DriverState } from "../hooks/useDriverAI";
 
 interface CameraFeedProps {
     webcamRef: React.RefObject<Webcam | null>;
@@ -12,8 +13,71 @@ interface CameraFeedProps {
 
 export const CameraFeed: React.FC<CameraFeedProps> = ({ webcamRef, canvasRef, driverState, isInitialized }) => {
 
+    const [isDrowsy, setIsDrowsy] = useState(false);
+
+    // ✅ NEW: FaceMesh setup
+    useEffect(() => {
+        const faceMesh = new FaceMesh({
+            locateFile: (file) =>
+                `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+        });
+
+        faceMesh.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+        });
+
+        faceMesh.onResults((results) => {
+            if (results.multiFaceLandmarks?.length > 0) {
+                const landmarks = results.multiFaceLandmarks[0];
+
+                const leftEye = [
+                    landmarks[33],
+                    landmarks[160],
+                    landmarks[158],
+                    landmarks[133],
+                ];
+
+                const vertical = Math.abs(leftEye[1].y - leftEye[2].y);
+                const horizontal = Math.abs(leftEye[0].x - leftEye[3].x);
+
+                const ear = vertical / horizontal;
+
+                if (ear < 0.2) {
+                    setIsDrowsy(true);
+                } else {
+                    setIsDrowsy(false);
+                }
+            }
+        });
+
+        // ✅ VERY IMPORTANT: send frames
+        const processFrame = async () => {
+            if (webcamRef.current?.video) {
+                await faceMesh.send({ image: webcamRef.current.video });
+            }
+            requestAnimationFrame(processFrame);
+        };
+
+        processFrame();
+
+        return () => {
+            faceMesh.close();
+        };
+    }, [webcamRef]);
+
     return (
         <div className="relative rounded-2xl overflow-hidden bg-black aspect-video shadow-soft border border-white/5">
+            
+            {/* ✅ NEW: Drowsiness Alert */}
+            {isDrowsy && (
+                <div className="absolute top-5 left-5 bg-red-600 text-white p-2 rounded z-20">
+                    ⚠️ Driver Drowsy!
+                </div>
+            )}
+
             {!isInitialized && (
                 <div className="absolute inset-0 flex items-center justify-center bg-surface z-20">
                     <div className="flex flex-col items-center gap-4">
