@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://FOX-KNIGHT.github.io/Face",
+  "homepage": "https://Home-Harmony.github.io/Face-Recognition",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
