@@ -12,6 +12,7 @@ import { useDriverAI } from './hooks/useDriverAI';
 function App() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const {
     driverState,
     logs,
@@ -26,34 +27,50 @@ function App() {
   } = useDriverAI(webcamRef, canvasRef);
 
   return (
-    <div className="min-h-screen pb-12 bg-background text-primary selection:bg-accent/30">
+    <div className="min-h-screen bg-background text-primary">
+
+      {/* Header */}
       <Header isMonitoring={isMonitoring} onToggleMonitoring={toggleMonitoring} />
 
-      <main className="container pt-24">
-        {/* Control Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
+      <main className="container mx-auto px-4 pt-24 pb-10">
+
+        {/* Top Controls */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <ModeSelector currentMode={driverMode} onModeChange={setDriverMode} />
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/5 to-transparent mx-4" />
           <SessionInfo startTime={sessionStartTime} alertCount={alertCount} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 min-h-[calc(100vh-12rem)] lg:h-[calc(100vh-12rem)] h-auto">
-          {/* Left Column: Camera & Status */}
-          <div className="flex flex-col gap-6">
+        {/* Main Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* LEFT: Camera */}
+          <div className="lg:col-span-2 space-y-6">
             <CameraFeed
               webcamRef={webcamRef}
               canvasRef={canvasRef}
               driverState={driverState}
               isInitialized={isInitialized}
             />
-            <StatusPanel status={driverState.status} isMonitoring={isMonitoring} />
-            <PrivacyPolicy />
+
+            {/* Status + Privacy in one row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatusPanel
+                status={driverState.status}
+                isMonitoring={isMonitoring}
+              />
+              <PrivacyPolicy />
+            </div>
           </div>
 
-          {/* Right Column: Logs */}
-          <div className="h-full overflow-hidden">
-            <LogTable logs={logs} onClearLogs={clearLogs} />
+          {/* RIGHT: Logs Panel */}
+          <div className="bg-surface/80 backdrop-blur-md border border-white/10 rounded-xl p-4 h-full flex flex-col">
+            <h2 className="text-lg font-semibold mb-3">Activity Logs</h2>
+
+            <div className="flex-1 overflow-y-auto">
+              <LogTable logs={logs} onClearLogs={clearLogs} />
+            </div>
           </div>
+
         </div>
       </main>
     </div>
