@@ -13,9 +13,8 @@ interface CameraFeedProps {
 
 export const CameraFeed: React.FC<CameraFeedProps> = ({ webcamRef, canvasRef, driverState, isInitialized }) => {
 
-    const [isDrowsy, setIsDrowsy] = useState(false);
 
-    // ✅ NEW: FaceMesh setup
+    //  FaceMesh setup
     useEffect(() => {
         const faceMesh = new FaceMesh({
             locateFile: (file) =>
@@ -45,15 +44,9 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({ webcamRef, canvasRef, dr
 
                 const ear = vertical / horizontal;
 
-                if (ear < 0.2) {
-                    setIsDrowsy(true);
-                } else {
-                    setIsDrowsy(false);
-                }
             }
         });
 
-        // ✅ VERY IMPORTANT: send frames
         const processFrame = async () => {
             if (webcamRef.current?.video) {
                 await faceMesh.send({ image: webcamRef.current.video });
@@ -71,8 +64,7 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({ webcamRef, canvasRef, dr
     return (
         <div className="relative rounded-2xl overflow-hidden bg-black aspect-video shadow-soft border border-white/5">
             
-            {/* ✅ NEW: Drowsiness Alert */}
-            {isDrowsy && (
+            {driverState.ear < 0.25 && (
                 <div className="absolute top-5 left-5 bg-red-600 text-white p-2 rounded z-20">
                     ⚠️ Driver Drowsy!
                 </div>
