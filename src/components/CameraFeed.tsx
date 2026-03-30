@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import Webcam from 'react-webcam';
 import { Camera } from 'lucide-react';
-import type { DriverState } from '../hooks/useDriverAI';
+import type { DriverState } from "../hooks/useDriverAI";
 
 interface CameraFeedProps {
     webcamRef: React.RefObject<Webcam | null>;
@@ -22,9 +22,20 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({
     const noFace = driverState.status === 'NO_FACE';
 
     return (
+<<<<<<< HEAD
         <div className="relative rounded-2xl overflow-hidden bg-black aspect-video border border-white/10 shadow-lg">
 
             {/* Loading Screen */}
+=======
+        <div className="relative rounded-2xl overflow-hidden bg-black aspect-video shadow-soft border border-white/5">
+            
+            {driverState.ear < 0.25 && (
+                <div className="absolute top-5 left-5 bg-red-600 text-white p-2 rounded z-20">
+                    ⚠️ Driver Drowsy!
+                </div>
+            )}
+
+>>>>>>> ade32f8e13eac3625e34d10b715abc60c57e0a9c
             {!isInitialized && (
                 <div className="absolute inset-0 flex items-center justify-center bg-surface z-20">
                     <div className="flex flex-col items-center gap-4">
